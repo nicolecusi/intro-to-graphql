@@ -12,6 +12,14 @@ const types = ['product', 'coupon', 'user']
 
 export const start = async () => {
   const rootSchema = `
+    type Cat {
+      name: String
+    }
+
+    type Query {
+      myCat: Cat
+    }
+
     schema {
       query: Query
       mutation: Mutation
@@ -21,7 +29,13 @@ export const start = async () => {
 
   const server = new ApolloServer({
     typeDefs: [rootSchema, ...schemaTypes],
-    resolvers: merge({}, product, coupon, user),
+    resolvers: { 
+      Query: { 
+        myCat() {
+          return { name: 'Garfield' }
+        }
+      }
+    },
     async context({ req }) {
       const user = await authenticate(req)
       return { user }
